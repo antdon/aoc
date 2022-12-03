@@ -22,7 +22,7 @@ getPriority character
   | character >= 'A' && character <= 'Z' = 27 + ord character - ord 'A'
 
 part1 :: String -> Int
-part1 input = sum(Prelude.map getPriority (Prelude.map singleBag (lines input)))
+part1 input = sum(Prelude.map (getPriority.singleBag) (lines input))
 
 threeBags :: Set Char -> Set Char -> String -> Char
 threeBags a b (c:cs)
