@@ -18,15 +18,19 @@ ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw
 """
 
-func shared(a:String, b:String) -> Character? {
-    let uniqueElements:Set<Character> = Set(a)
-    for j:Character in b {
-        if uniqueElements.contains(j) {
-            return(j)
-        }
+func shared(bags:[String]) -> Character? {
+    let uniqueElements:[Set<Character>] = bags.map { Set($0) }
+    var intersect:Set<Character> = uniqueElements.first ?? Set<Character>()
+    for set in uniqueElements {
+        intersect = intersect.intersection(set)
     }
-    return nil
+    if intersect.count == 1 {
+        return intersect.first
+    } else  {
+        return nil
+    }
 }
+
 
 func splitUp(a:String) -> (String, String) {
     let len = a.length/2
@@ -51,11 +55,19 @@ func score(b:Character?) -> Int {
     }
 }
 
+// Part 1
 let input = getData()!
-let packs = input.split(separator: "\n")
+let packs = input.split(separator: "\n").map { String($0) }
 var total = 0
 for pack in packs {
-    let (compartment1, comparment2) = splitUp(a:String(pack))
-    total += score(b:shared(a:compartment1, b:comparment2))
+    let (compartment1, comparment2) = splitUp(a:pack)
+    total += score(b:shared(bags:[compartment1, comparment2]))
+}
+print(total)
+
+// Part 2
+total = 0
+for i in stride(from:0, to:packs.count-2, by:3) {
+    total += score(b:shared(bags: Array<String>(packs[i..<i+3])))
 }
 print(total)
