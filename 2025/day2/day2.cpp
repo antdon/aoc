@@ -31,13 +31,13 @@ std::vector<Range> parseInput() {
 }
 
 bool isRepetition(const std::string& value, int splits) {
-  if (value.size() % 2 != 0) {
+  if (value.size() % splits != 0) {
       return false;
   }
   auto sv = std::string_view(value);
   auto size = value.size() / splits;
   auto first = sv.substr(0, size);
-  for (const auto& start : std::views::iota(0uz, value.size() - size + 1)) {
+  for (auto start = 0uz; start < sv.size(); start += size) {
       if (sv.substr(start, size) != first) {
 	  return false;
       }
@@ -48,16 +48,24 @@ bool isRepetition(const std::string& value, int splits) {
 
 int main() {
     auto ranges = parseInput();
-    uint64_t total = 0;
+    uint64_t part1 = 0;
+    uint64_t part2 = 0;
     for (const auto& range : ranges) {
 	for (const auto& val : std::views::iota(range.lower,range.upper+1)) {
 	    auto digits = std::to_string(val);
             if (isRepetition(digits, 2)) {
-		total += val;
+		part1 += val;
+	    }
+	    for (auto i = 2; i < digits.size()+1; ++i) {
+		if (isRepetition(digits, i)) {
+		    part2 += val;
+		    break;
+		} 
 	    }
 	}
     }
-    std::cout << total << std::endl;
+    std::cout << part1 << std::endl;
+    std::cout << part2 << std::endl;
     
 }
 
